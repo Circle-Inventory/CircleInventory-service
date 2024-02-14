@@ -1,0 +1,9 @@
+com\toholanka\inventorybackend\InventoryBackendApplication.class
+com\toholanka\inventorybackend\service\CategoryService.class
+com\toholanka\inventorybackend\controller\CategoryController.class
+com\toholanka\inventorybackend\common\ApiResponse.class
+com\toholanka\inventorybackend\config\Webconfig$1.class
+com\toholanka\inventorybackend\config\Webconfig.class
+com\toholanka\inventorybackend\config\SwaggerConfig.class
+com\toholanka\inventorybackend\repository\CategoryRepo.class
+com\toholanka\inventorybackend\model\Category.class
