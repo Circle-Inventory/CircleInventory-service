@@ -2,6 +2,7 @@ package com.toholanka.inventorybackend.model;
 
 import jakarta.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
+import java.util.Date;
 
 @Entity
 @Table(name = "users")
@@ -22,17 +23,32 @@ public class Users {
     @Column(name = "lastName")
     private String lastName;
 
+    @Column(name = "userName")
+    private String userName;
+
     @Column(name = "password")
     private String password;
 
     @Column(name = "email")
     private String email;
 
+    @Column(name = "phoneNumber")
+    private String phoneNumber;
+
+    @Column(name = "dateAdded")
+    private Date addDate;
+
     @Column(name = "role")
     private String role;
 
     @Column(name = "imageUrl")
     private String imageUrl;
+
+    @Column(name = "verified")
+    private Boolean verified;
+
+    @Column(name = "invite")
+    private Boolean invite;
 
     public String getUserId() { return userId; }
 
@@ -46,9 +62,21 @@ public class Users {
 
     public void setLastName(String lastName) { this.lastName = lastName; }
 
+    public String getUserName() { return userName; }
+
+    public void setUserName(String userName) { this.userName = userName; }
+
     public String getPassword() { return password; }
 
     public void setPassword(String password) { this.password = password; }
+
+    public String getPhoneNumber() { return phoneNumber; }
+
+    public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
+
+    public Date getAddDate() { return addDate; }
+
+    public void setAddDate(Date addDate) { this.addDate = addDate; }
 
     public String getEmail() { return email; }
 
@@ -61,4 +89,16 @@ public class Users {
     public String getImageUrl() { return imageUrl; }
 
     public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
+
+    public Boolean getVerified() {
+        return verified;
+    }
+
+    public void setVerified(Boolean verified) {
+        this.verified = verified;
+    }
+
+    public Boolean getInvite() { return invite; }
+
+    public void setInvite(Boolean invite) { this.invite = invite; }
 }

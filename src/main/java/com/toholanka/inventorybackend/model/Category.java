@@ -38,7 +38,7 @@ public class Category {
     private String tag;
 
     @Column(name = "status")
-    private Boolean status;
+    private String status;
 
 
     //getters and setters
@@ -77,11 +77,12 @@ public class Category {
         this.imageUrl = imageUrl;
     }
 
-    public Boolean getStatus() { return status; }
+    public String getStatus() { return status; }
+
+    public void setStatus(String status) { this.status = status; }
 
     public String getTag() { return tag; }
 
     public void setTag(String tag) { this.tag = tag; }
 
-    public void setStatus(Boolean status) { this.status = status;}
 }

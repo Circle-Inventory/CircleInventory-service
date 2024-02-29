@@ -14,11 +14,14 @@ import java.util.Optional;
 @Service
 public class ItemService {
 
-    @Autowired
-    private NewItemRepository newItemRepository;
+    private final NewItemRepository newItemRepository;
 
-    @Autowired
-    private CategoryRepository categoryRepository;
+    private final CategoryRepository categoryRepository;
+
+    public ItemService(NewItemRepository newItemRepository, CategoryRepository categoryRepository) {
+        this.newItemRepository = newItemRepository;
+        this.categoryRepository = categoryRepository;
+    }
 
     @Transactional
     public Item addItem(Item item) {

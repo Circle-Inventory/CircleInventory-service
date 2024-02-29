@@ -9,8 +9,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuthenticationService {
 
-    @Autowired
-    private TokenRepository tokenRepository;
+    private final TokenRepository tokenRepository;
+
+    public AuthenticationService(TokenRepository tokenRepository) {
+        this.tokenRepository = tokenRepository;
+    }
 
     public void saveConfirmationToken(AuthenticationToken authenticationToken) {
         tokenRepository.save(authenticationToken);

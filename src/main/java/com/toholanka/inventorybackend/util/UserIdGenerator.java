@@ -21,7 +21,7 @@ public class UserIdGenerator implements IdentifierGenerator {
                 .setMaxResults(1)
                 .list();
 
-        int nextNumber = 1; // Start from initial value if no IDs found
+        int nextNumber = 0; // Start from initial value if no IDs found
         if (!ids.isEmpty()) {
             String lastId = (String) ids.get(0);
             Pattern pattern = Pattern.compile(PREFIX + "(\\d+)");

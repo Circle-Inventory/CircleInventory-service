@@ -7,11 +7,9 @@ import com.toholanka.inventorybackend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
-import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,9 +24,6 @@ public class InitialDataSeeder implements ApplicationListener<ApplicationReadyEv
     @Autowired
     private TokenRepository tokenRepository;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
     @Override
     public void onApplicationEvent(ApplicationReadyEvent event) {
         Optional<Users> existingUser = userRepository.findByEmail("admin@toholanka.com");
@@ -41,10 +36,12 @@ public class InitialDataSeeder implements ApplicationListener<ApplicationReadyEv
     private Users createAdminUser() {
         Users adminUser = new Users();
         adminUser.setEmail("admin@toholanka.com");
-        adminUser.setPassword(passwordEncoder.encode("toholanka"));
+        adminUser.setPassword("toholanka");
         adminUser.setFirstName("TOHO");
         adminUser.setLastName("LANKA");
         adminUser.setRole("ADMIN");
+        adminUser.setUserName("TOHO LANKA");
+        adminUser.setVerified(true);
 
         Users savedUser = userRepository.save(adminUser);
         log.info("Admin user created successfully");

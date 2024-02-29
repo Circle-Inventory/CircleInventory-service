@@ -5,7 +5,6 @@ import com.toholanka.inventorybackend.exceptions.AuthenticationFailException;
 import com.toholanka.inventorybackend.model.Category;
 import com.toholanka.inventorybackend.service.AuthenticationService;
 import com.toholanka.inventorybackend.service.CategoryService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import jakarta.persistence.EntityNotFoundException;
@@ -17,11 +16,14 @@ import java.util.List;
 @RequestMapping("/category")
 public class CategoryController {
 
-    @Autowired
-    CategoryService categoryService;
+    private final CategoryService categoryService;
 
-    @Autowired
-    private AuthenticationService authenticationService;
+    private final AuthenticationService authenticationService;
+
+    public CategoryController(CategoryService categoryService, AuthenticationService authenticationService) {
+        this.categoryService = categoryService;
+        this.authenticationService = authenticationService;
+    }
 
     @PostMapping("/create")
     public ResponseEntity<ApiResponse> createCategory(@RequestHeader("Authorization") String authHeader, @RequestBody Category category) {
@@ -36,7 +38,8 @@ public class CategoryController {
             }
 
             categoryService.createCategory(category);
-            return new ResponseEntity<>(new ApiResponse(true, "a new category created"), HttpStatus.CREATED);
+            return new ResponseEntity<>(new ApiResponse(true, "A new category created"), HttpStatus.CREATED);
+
         } catch (AuthenticationFailException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse(false, e.getMessage()));
         }
@@ -49,9 +52,9 @@ public class CategoryController {
 
     @PutMapping("/update/{categoryId}")
     public ResponseEntity<ApiResponse> updateCategory(@RequestHeader("Authorization") String authHeader, @PathVariable("categoryId") String categoryId, @RequestBody Category category ) {
-        if (!categoryService.findById(categoryId)) {
-            return new ResponseEntity<ApiResponse>(new ApiResponse(false, "category does not exists"), HttpStatus.NOT_FOUND);
-        }
+        if (!categoryService.findById(categoryId))
+            return new ResponseEntity<>(new ApiResponse(false, "Category does not exists"), HttpStatus.NOT_FOUND);
+
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse(false, "Invalid Authorization header format."));
         }
@@ -63,7 +66,8 @@ public class CategoryController {
             }
 
             categoryService.editCategory(categoryId, category);
-            return new ResponseEntity<ApiResponse>(new ApiResponse(true, "category has been updated"), HttpStatus.OK);
+            return new ResponseEntity<>(new ApiResponse(true, "Category has been updated"), HttpStatus.OK);
+
         } catch (AuthenticationFailException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse(false, e.getMessage()));
         }
@@ -82,7 +86,8 @@ public class CategoryController {
             }
             
             categoryService.deleteCategory(categoryId);
-            return new ResponseEntity<>(new ApiResponse(true, "category has been deleted"), HttpStatus.OK);
+            return new ResponseEntity<>(new ApiResponse(true, "Category has been deleted"), HttpStatus.OK);
+
         } catch (EntityNotFoundException e) {
             return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), HttpStatus.NOT_FOUND);
         } catch (Exception e) {

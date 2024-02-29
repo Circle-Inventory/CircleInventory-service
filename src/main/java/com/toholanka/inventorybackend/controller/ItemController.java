@@ -6,7 +6,6 @@ import com.toholanka.inventorybackend.model.Item;
 import com.toholanka.inventorybackend.service.AuthenticationService;
 import com.toholanka.inventorybackend.service.ItemService;
 import jakarta.persistence.EntityNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,11 +16,14 @@ import java.util.List;
 @RequestMapping("/items")
 public class ItemController {
 
-    @Autowired
-    private ItemService itemService;
+    private final ItemService itemService;
 
-    @Autowired
-    private AuthenticationService authenticationService;
+    private final AuthenticationService authenticationService;
+
+    public ItemController(ItemService itemService, AuthenticationService authenticationService) {
+        this.itemService = itemService;
+        this.authenticationService = authenticationService;
+    }
 
     @PostMapping("/create")
     public ResponseEntity<ApiResponse> addNewItem(@RequestHeader("Authorization") String authHeader, @RequestBody Item item) {
@@ -36,7 +38,8 @@ public class ItemController {
             }
 
             itemService.addItem(item);
-            return new ResponseEntity<>(new ApiResponse(true, "a new item created"), HttpStatus.CREATED);
+            return new ResponseEntity<>(new ApiResponse(true, "A new item created"), HttpStatus.CREATED);
+
         } catch (AuthenticationFailException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse(false, e.getMessage()));
         }
@@ -47,9 +50,8 @@ public class ItemController {
                                                   @PathVariable String itemId,
                                                   @RequestBody Item updateItem) {
 
-        if(!itemService.findById(itemId)){
-            return new ResponseEntity<ApiResponse>(new ApiResponse(false, "item does not exists"), HttpStatus.NOT_FOUND);
-        }
+        if(!itemService.findById(itemId))
+            return new ResponseEntity<>(new ApiResponse(false, "Item does not exists"), HttpStatus.NOT_FOUND);
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse(false, "Invalid Authorization header format."));
@@ -62,7 +64,8 @@ public class ItemController {
             }
 
             itemService.updateItem(itemId, updateItem);
-            return new ResponseEntity<ApiResponse>(new ApiResponse(true, "item has been updated"), HttpStatus.OK);
+            return new ResponseEntity<>(new ApiResponse(true, "Item has been updated"), HttpStatus.OK);
+
         } catch (AuthenticationFailException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse(false, e.getMessage()));
         }
@@ -80,7 +83,8 @@ public class ItemController {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ApiResponse(false, "Access denied."));
             }
             itemService.deleteItem(itemId);
-            return new ResponseEntity<>(new ApiResponse(true, "item has been deleted"), HttpStatus.OK);
+            return new ResponseEntity<>(new ApiResponse(true, "Item has been deleted"), HttpStatus.OK);
+
         } catch (EntityNotFoundException e) {
             return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), HttpStatus.NOT_FOUND);
         } catch (Exception e) {

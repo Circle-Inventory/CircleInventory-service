@@ -10,7 +10,7 @@ CREATE TABLE Category (
     date_added DATE,
     image_url VARCHAR(225),
     tag VARCHAR(255),
-    status BOOLEAN,
+    status VARCHAR(50),
     PRIMARY KEY (category_id)
 );
 
@@ -36,8 +36,13 @@ CREATE TABLE Users (
     password VARCHAR(255),
     email VARCHAR(255),
     first_name VARCHAR(255),
+    user_name VARCHAR(255),
+    phone_number VARCHAR(255),
+    date_added DATE,
     image_url VARCHAR(255),
-    role VARCHAR(255)
+    role VARCHAR(255),
+    verified BOOLEAN DEFAULT FALSE,
+    invite BOOLEAN DEFAULT FALSE
 );
 
 CREATE TABLE Tokens (
