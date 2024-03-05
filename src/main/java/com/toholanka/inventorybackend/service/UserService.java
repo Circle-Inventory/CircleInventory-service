@@ -14,7 +14,6 @@ import com.toholanka.inventorybackend.repository.TokenRepository;
 import com.toholanka.inventorybackend.repository.UserRepository;
 import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 
@@ -27,16 +26,13 @@ public class UserService {
 
     private final AuthenticationService authenticationService;
 
-    private final PasswordEncoder passwordEncoder;
-
     private final TokenRepository tokenRepository;
 
     private final EmailService emailService;
 
-    public UserService(UserRepository userRepository, AuthenticationService authenticationService, PasswordEncoder passwordEncoder, TokenRepository tokenRepository, EmailService emailService) {
+    public UserService(UserRepository userRepository, AuthenticationService authenticationService, TokenRepository tokenRepository, EmailService emailService) {
         this.userRepository = userRepository;
         this.authenticationService = authenticationService;
-        this.passwordEncoder = passwordEncoder;
         this.tokenRepository = tokenRepository;
         this.emailService = emailService;
     }
@@ -47,7 +43,7 @@ public class UserService {
         Optional<Users> existingUser = userRepository.findByEmail(signupDto.getEmail());
         if (existingUser.isPresent()) {
 
-            throw new CustomException("user already present");
+            throw new CustomException("User already present");
         }
 
         Users user = new Users();
@@ -64,7 +60,7 @@ public class UserService {
 
         authenticationService.saveConfirmationToken(authenticationToken);
 
-        return new ResponseDto("success", "user created succesfully");
+        return new ResponseDto("Success", "User created successfully");
     }
 
     public SignInReponseDto signIn(SignInDto signInDto) {
@@ -72,26 +68,26 @@ public class UserService {
         Optional<Users> optionalUser = userRepository.findByEmail(signInDto.getEmail());
 
         if (optionalUser.isEmpty()) {
-            throw new AuthenticationFailException("user is not valid");
+            throw new AuthenticationFailException("User is not valid");
         }
 
         Users user = optionalUser.get();
 
         if (!Objects.equals(signInDto.getPassword(), user.getPassword())) {
-            throw new AuthenticationFailException("wrong password");
+            throw new AuthenticationFailException("Wrong password");
         }
 
         if (!user.getVerified()){
-            throw new AuthenticationFailException ("user not yet joined");
+            throw new AuthenticationFailException ("User not yet joined");
         }
 
         AuthenticationToken token = authenticationService.getToken(user);
 
         if (Objects.isNull(token)) {
-            throw new CustomException("token is not present");
+            throw new CustomException("Token is not present");
         }
 
-        return new SignInReponseDto("sucess", token.getToken());
+        return new SignInReponseDto("Success", token.getToken());
 
     }
 
@@ -100,7 +96,7 @@ public class UserService {
         Users user = authenticationService.getUserByToken(token);
 
         if (user==null){
-            throw new AuthenticationFailException("user is not found");
+            throw new AuthenticationFailException("User is not found");
         }
         return user;
     }
@@ -140,7 +136,13 @@ public class UserService {
         Users user = authenticationService.getUserByToken(token);
 
         if (user==null){
-            throw new AuthenticationFailException("user is not found");
+            throw new AuthenticationFailException("User is not found");
+        }
+
+        String oldPassword = user.getPassword();
+
+        if (Objects.equals(oldPassword, newPassword)) {
+            throw new CustomException("Please give different password");
         }
 
         user.setPassword(newPassword);
