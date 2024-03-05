@@ -1,9 +1,9 @@
 package com.toholanka.inventorybackend.controller;
 
 import com.toholanka.inventorybackend.common.ApiResponse;
-import com.toholanka.inventorybackend.dto.ResponseDto;
 import com.toholanka.inventorybackend.dto.user.*;
 import com.toholanka.inventorybackend.exceptions.AuthenticationFailException;
+import com.toholanka.inventorybackend.exceptions.CustomException;
 import com.toholanka.inventorybackend.model.Users;
 import com.toholanka.inventorybackend.service.UserService;
 import jakarta.mail.MessagingException;
@@ -86,7 +86,7 @@ public class UserController {
         try {
             userService.editUserPassword(token, editPasswordDto.getPassword());
             return ResponseEntity.ok(new ApiResponse(true, "User Password edit successfully."));
-        } catch (AuthenticationFailException e) {
+        } catch (CustomException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(false, e.getMessage()));
         }
     }
